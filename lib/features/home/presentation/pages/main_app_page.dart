@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../models/meal.dart';
+import '../../../../models/meal.dart';
+import '../../../auth/data/auth_service.dart';
 
 class MainAppPage extends StatelessWidget {
   const MainAppPage({super.key});
@@ -10,13 +10,14 @@ class MainAppPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firestore = FirebaseFirestore.instance;
+    final authService = AuthService();
 
     return Scaffold(
       appBar: AppBar(title: const Text("Meals")),
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder(
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: firestore.collection("meals").snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
@@ -36,9 +37,19 @@ class MainAppPage extends StatelessWidget {
                 return ListView.builder(
                   itemCount: meals.length,
                   itemBuilder: (context, i) {
-                    return ListTile(
-                      title: Text(meals[i].name),
-                      subtitle: Text(meals[i].mealtype.name),
+                    return GestureDetector(
+                      onTap: () {
+                        final userId = authService.currentUser?.uid;
+                        if (userId != null) {
+                           firestore.collection("user_data").doc(userId).set({
+                            "meals_selected": meals[i].id
+                          });
+                        }
+                      },
+                      child: ListTile(
+                        title: Text(meals[i].name),
+                        subtitle: Text(meals[i].mealtype.name),
+                      ),
                     );
                   },
                 );
@@ -49,7 +60,7 @@ class MainAppPage extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: () {
-                FirebaseAuth.instance.signOut();
+                authService.signOut();
               },
               child: const Text("Logout"),
             ),
@@ -59,3 +70,4 @@ class MainAppPage extends StatelessWidget {
     );
   }
 }
+
