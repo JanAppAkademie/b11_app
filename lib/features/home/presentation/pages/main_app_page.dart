@@ -1,7 +1,9 @@
+import 'package:b11_app/features/home/presentation/pages/add_meal_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../models/meal.dart';
+import '../../../../services/firestore_logger_service.dart';
 import '../../../auth/data/auth_service.dart';
 
 class MainAppPage extends StatelessWidget {
@@ -13,12 +15,28 @@ class MainAppPage extends StatelessWidget {
     final authService = AuthService();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Meals")),
+      appBar: AppBar(
+        title: const Text("Meals"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddMealPage()),
+              );
+            },
+            icon: Icon(Icons.add),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: firestore.collection("meals").snapshots(),
+              stream: firestore
+                  .collection("meals")
+                  .snapshots()
+                  .withLogging("meals"),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text("Fehler: ${snapshot.error}");
@@ -41,8 +59,8 @@ class MainAppPage extends StatelessWidget {
                       onTap: () {
                         final userId = authService.currentUser?.uid;
                         if (userId != null) {
-                           firestore.collection("user_data").doc(userId).set({
-                            "meals_selected": meals[i].id
+                          firestore.setWithLogging("user_data", userId, {
+                            "meals_selected": meals[i].id,
                           });
                         }
                       },
@@ -58,11 +76,23 @@ class MainAppPage extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                authService.signOut();
-              },
-              child: const Text("Logout"),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    FirestoreLoggerService.printSummary();
+                  },
+
+                  label: const Text("Show Stats"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    authService.signOut();
+                  },
+                  child: const Text("Logout"),
+                ),
+              ],
             ),
           ),
         ],
@@ -70,4 +100,3 @@ class MainAppPage extends StatelessWidget {
     );
   }
 }
-
