@@ -1,4 +1,5 @@
 import 'package:b11_app/features/home/presentation/pages/add_meal_page.dart';
+import 'package:b11_app/services/firestore_repo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,7 @@ class MainAppPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final firestoreRepo = FirestoreRepository();
     final firestore = FirebaseFirestore.instance;
     final authService = AuthService();
 
@@ -32,11 +34,8 @@ class MainAppPage extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: firestore
-                  .collection("meals")
-                  .snapshots()
-                  .withLogging("meals"),
+            child: StreamBuilder(
+              stream: firestoreRepo.streamMeals(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text("Fehler: ${snapshot.error}");
@@ -46,11 +45,7 @@ class MainAppPage extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                final docs = snapshot.data!.docs;
-
-                final meals = docs.map((doc) {
-                  return Meal.fromMap(doc.id, doc.data());
-                }).toList();
+                final meals = snapshot.data!;
 
                 return ListView.builder(
                   itemCount: meals.length,
