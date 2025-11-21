@@ -12,6 +12,7 @@ class AddMealPage extends StatefulWidget {
 class _AddMealPageState extends State<AddMealPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _mealTypeController = TextEditingController();
+  String? _selectedMealType;
 
   @override
   void initState() {
@@ -46,11 +47,11 @@ class _AddMealPageState extends State<AddMealPage> {
                 .toList(),
             onChanged: (value) {
               setState(() {
-                label = value!;
+                _selectedMealType = value!;
                 print(label);
               });
             },
-            value: label,
+            value: _selectedMealType,
           ),
           ElevatedButton(
             onPressed: () {
@@ -59,7 +60,7 @@ class _AddMealPageState extends State<AddMealPage> {
                   .doc("LA")
                   .set({
                     "name": _nameController.text,
-                    "mealtype": _mealTypeController.text,
+                    "mealtype": _selectedMealType,
                   })
                   .onError((e, _) => print("Error writing document: $e"));
             },
