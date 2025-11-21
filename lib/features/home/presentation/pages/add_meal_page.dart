@@ -1,4 +1,5 @@
 import 'package:b11_app/models/meal.dart';
+import 'package:b11_app/services/firestore_repo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -22,9 +23,8 @@ class _AddMealPageState extends State<AddMealPage> {
   @override
   Widget build(BuildContext context) {
     List<String> testList = MealType.values.map((e) => e.name).toList();
-    String label = testList.first;
 
-    final db = FirebaseFirestore.instance;
+    final db = FirestoreRepository();
     return Scaffold(
       appBar: AppBar(title: const Text("Add Meal")),
       body: Column(
@@ -48,21 +48,30 @@ class _AddMealPageState extends State<AddMealPage> {
             onChanged: (value) {
               setState(() {
                 _selectedMealType = value!;
-                print(label);
+                print(_selectedMealType);
               });
             },
             value: _selectedMealType,
           ),
           ElevatedButton(
             onPressed: () {
-              db
-                  .collection("meals")
-                  .doc("LA")
-                  .set({
-                    "name": _nameController.text,
-                    "mealtype": _selectedMealType,
-                  })
-                  .onError((e, _) => print("Error writing document: $e"));
+              // db
+              //     .collection("meals")
+              //     .doc("testBeispiel")
+              //     .set({
+              //       "name": _nameController.text,
+              //       "mealtype": _selectedMealType,
+              //     })
+              //     .onError((e, _) => print("Error writing document: $e"));
+              db.createMeal(
+                Meal(
+                  id: "1",
+                  name: _nameController.text,
+                  mealtype: MealType.values.byName(
+                    _selectedMealType ?? "OMNIVORE",
+                  ),
+                ),
+              );
             },
             child: Text("Add Meal"),
           ),
