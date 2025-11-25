@@ -2,6 +2,7 @@ import 'package:b11_app/features/home/presentation/pages/add_meal_page.dart';
 import 'package:b11_app/services/firestore_repo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../models/meal.dart';
 import '../../../../services/firestore_logger_service.dart';
@@ -12,10 +13,6 @@ class MainAppPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firestoreRepo = FirestoreRepository();
-    final firestore = FirebaseFirestore.instance;
-    final authService = AuthService();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Meals"),
@@ -33,9 +30,10 @@ class MainAppPage extends StatelessWidget {
       ),
       body: Column(
         children: [
+          MyTextWidget(),
           Expanded(
             child: StreamBuilder(
-              stream: firestoreRepo.streamMeals(),
+              stream: context.read<FirestoreRepository>().streamMeals(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text("Fehler: ${snapshot.error}");
@@ -52,11 +50,16 @@ class MainAppPage extends StatelessWidget {
                   itemBuilder: (context, i) {
                     return GestureDetector(
                       onTap: () {
-                        final userId = authService.currentUser?.uid;
+                        final userId = context
+                            .read<AuthService>()
+                            .currentUser
+                            ?.uid;
                         if (userId != null) {
-                          firestore.setWithLogging("user_data", userId, {
-                            "meals_selected": meals[i].id,
-                          });
+                          context.read<FirebaseFirestore>().setWithLogging(
+                            "user_data",
+                            userId,
+                            {"meals_selected": meals[i].id},
+                          );
                         }
                       },
                       child: ListTile(
@@ -83,7 +86,7 @@ class MainAppPage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    authService.signOut();
+                    context.read<AuthService>().signOut();
                   },
                   child: const Text("Logout"),
                 ),
@@ -93,5 +96,20 @@ class MainAppPage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class MyTextWidget extends StatelessWidget {
+  const MyTextWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(context.read<TestService>().getTestString());
+  }
+}
+
+class TestService {
+  String getTestString() {
+    return "Test";
   }
 }

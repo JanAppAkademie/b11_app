@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../data/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,7 +14,7 @@ class _LoginPageState extends State<LoginPage> {
   final AuthService _authService = AuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
+
   final _formKey = GlobalKey<FormState>();
 
   void _register() async {
@@ -69,14 +70,15 @@ class _LoginPageState extends State<LoginPage> {
 
   void _showError(String message) {
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    context.read<AuthService>().authStateChanges.listen((user) {});
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -116,17 +118,14 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: _register,
                 child: const Text('Register'),
               ),
-              ElevatedButton(
-                onPressed: _login,
-                child: const Text('Login'),
-              ),
+              ElevatedButton(onPressed: _login, child: const Text('Login')),
               const SizedBox(height: 20),
               const Divider(),
               const SizedBox(height: 20),
               OutlinedButton.icon(
                 onPressed: _signInWithGoogle,
                 label: const Text("Sign in with Google"),
-                icon: const Icon(Icons.login), 
+                icon: const Icon(Icons.login),
               ),
             ],
           ),
