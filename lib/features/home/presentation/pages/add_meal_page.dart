@@ -1,7 +1,9 @@
+import 'package:b11_app/features/home/presentation/pages/main_app_page.dart';
 import 'package:b11_app/models/meal.dart';
 import 'package:b11_app/services/firestore_repo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddMealPage extends StatefulWidget {
   const AddMealPage({super.key});
@@ -23,7 +25,7 @@ class _AddMealPageState extends State<AddMealPage> {
   @override
   Widget build(BuildContext context) {
     List<String> testList = MealType.values.map((e) => e.name).toList();
-
+    print("addmealpage reload");
     final db = FirestoreRepository();
     return Scaffold(
       appBar: AppBar(title: const Text("Add Meal")),
@@ -75,6 +77,7 @@ class _AddMealPageState extends State<AddMealPage> {
             },
             child: Text("Add Meal"),
           ),
+          Text("Tapped: ${context.watch<TestService>().tappedCount}"),
         ],
       ),
     );

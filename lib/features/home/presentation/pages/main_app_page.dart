@@ -13,6 +13,7 @@ class MainAppPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("mainApppage reload");
     return Scaffold(
       appBar: AppBar(
         title: const Text("Meals"),
@@ -96,13 +97,19 @@ class MyTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<TestService>(
       builder: (context, testService, child) {
-        return Text("Tapped: ${testService.tappedCount}");
+        print("Consumer reload");
+        if (testService._tappedCount == 0) {
+          return CircularProgressIndicator();
+        } else {
+          return Text("Tapped: ${testService.tappedCount}");
+        }
       },
     );
   }
 }
 
 class TestService extends ChangeNotifier {
+  TestService();
   int _tappedCount = 0;
 
   int get tappedCount => _tappedCount;

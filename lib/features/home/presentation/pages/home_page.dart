@@ -19,10 +19,7 @@ class HomePage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.hasData) {
               // User is logged in
-              return Provider(
-                create: (_) => TestService(),
-                child: MainAppPage(),
-              );
+              return MainAppPage();
             }
             // User is not logged in
             return const LoginPage();
