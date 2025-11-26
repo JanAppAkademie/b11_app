@@ -50,17 +50,7 @@ class MainAppPage extends StatelessWidget {
                   itemBuilder: (context, i) {
                     return GestureDetector(
                       onTap: () {
-                        final userId = context
-                            .read<AuthService>()
-                            .currentUser
-                            ?.uid;
-                        if (userId != null) {
-                          context.read<FirebaseFirestore>().setWithLogging(
-                            "user_data",
-                            userId,
-                            {"meals_selected": meals[i].id},
-                          );
-                        }
+                        context.read<TestService>().incrementTappedCount();
                       },
                       child: ListTile(
                         title: Text(meals[i].name),
@@ -104,12 +94,21 @@ class MyTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(context.read<TestService>().getTestString());
+    return Consumer<TestService>(
+      builder: (context, testService, child) {
+        return Text("Tapped: ${testService.tappedCount}");
+      },
+    );
   }
 }
 
-class TestService {
-  String getTestString() {
-    return "Test";
+class TestService extends ChangeNotifier {
+  int _tappedCount = 0;
+
+  int get tappedCount => _tappedCount;
+
+  void incrementTappedCount() {
+    _tappedCount++;
+    notifyListeners();
   }
 }

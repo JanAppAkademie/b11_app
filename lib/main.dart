@@ -21,7 +21,7 @@ void main() async {
         Provider<AuthService>(create: (_) => AuthService()),
         Provider<FirestoreRepository>(create: (_) => firestoreRepo),
         Provider<FirebaseFirestore>(create: (_) => firestore),
-        Provider<TestService>(create: (_) => TestService()),
+        ChangeNotifierProvider<TestService>(create: (_) => TestService()),
       ],
       child: MaterialApp(home: const HomePage()),
     ),
