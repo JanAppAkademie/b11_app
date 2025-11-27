@@ -22,3 +22,5 @@ class Meal {
     return {"name": name, "mealtype": mealtype.name};
   }
 }
+
+

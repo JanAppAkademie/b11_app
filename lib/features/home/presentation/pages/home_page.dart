@@ -1,5 +1,3 @@
-import 'package:b11_app/services/firestore_repo.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,14 +16,10 @@ class HomePage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.hasData) {
-              // User is logged in
               return MainAppPage();
             }
-            // User is not logged in
             return const LoginPage();
           }
-
-          // Waiting for connection
           return const Center(child: CircularProgressIndicator());
         },
       ),

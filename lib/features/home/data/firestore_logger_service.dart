@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
-/// Simple logger to track Firestore reads and writes
 class FirestoreLoggerService {
   static int _readCount = 0;
   static int _writeCount = 0;
@@ -125,3 +124,5 @@ extension StreamLogging on Stream<QuerySnapshot<Map<String, dynamic>>> {
     });
   }
 }
+
+

@@ -1,12 +1,11 @@
 import 'package:b11_app/features/home/presentation/pages/add_meal_page.dart';
-import 'package:b11_app/services/firestore_repo.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:b11_app/features/home/data/firestore_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../models/meal.dart';
-import '../../../../services/firestore_logger_service.dart';
+import '../../data/firestore_logger_service.dart';
 import '../../../auth/data/auth_service.dart';
+import '../state/counter_service.dart';
 
 class MainAppPage extends StatelessWidget {
   const MainAppPage({super.key});
@@ -51,7 +50,7 @@ class MainAppPage extends StatelessWidget {
                   itemBuilder: (context, i) {
                     return GestureDetector(
                       onTap: () {
-                        context.read<TestService>().incrementTappedCount();
+                        context.read<CounterService>().incrementTappedCount();
                       },
                       child: ListTile(
                         title: Text(meals[i].name),
@@ -95,27 +94,14 @@ class MyTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TestService>(
-      builder: (context, testService, child) {
+    return Consumer<CounterService>(
+      builder: (context, counterService, child) {
         print("Consumer reload");
-        if (testService._tappedCount == 0) {
+        if (counterService.tappedCount == 0) {
           return CircularProgressIndicator();
-        } else {
-          return Text("Tapped: ${testService.tappedCount}");
         }
+        return Text("Tapped: ${counterService.tappedCount}");
       },
     );
-  }
-}
-
-class TestService extends ChangeNotifier {
-  TestService();
-  int _tappedCount = 0;
-
-  int get tappedCount => _tappedCount;
-
-  void incrementTappedCount() {
-    _tappedCount++;
-    notifyListeners();
   }
 }

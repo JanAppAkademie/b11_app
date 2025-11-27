@@ -1,10 +1,9 @@
-import 'package:b11_app/models/meal.dart';
+import 'package:b11_app/features/home/domain/meal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreRepository {
   final _firestore = FirebaseFirestore.instance;
 
-  // CRUD
   Future<String> createMeal(Meal meal) async {
     final doc = await _firestore.collection("meals").add(meal.toMap());
     return doc.id;
@@ -42,3 +41,5 @@ class FirestoreRepository {
         );
   }
 }
+
+

@@ -1,9 +1,8 @@
-import 'package:b11_app/features/home/presentation/pages/main_app_page.dart';
-import 'package:b11_app/models/meal.dart';
-import 'package:b11_app/services/firestore_repo.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:b11_app/features/home/domain/meal.dart';
+import 'package:b11_app/features/home/data/firestore_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../state/counter_service.dart';
 
 class AddMealPage extends StatefulWidget {
   const AddMealPage({super.key});
@@ -14,7 +13,6 @@ class AddMealPage extends StatefulWidget {
 
 class _AddMealPageState extends State<AddMealPage> {
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _mealTypeController = TextEditingController();
   String? _selectedMealType;
 
   @override
@@ -38,8 +36,6 @@ class _AddMealPageState extends State<AddMealPage> {
             ),
             controller: _nameController,
             validator: (value) =>
-                //validate whether its a valid input
-                //validate whether the name is already in the database
                 value != null && value.isNotEmpty ? null : "Required",
           ),
           DropdownButton(
@@ -57,14 +53,6 @@ class _AddMealPageState extends State<AddMealPage> {
           ),
           ElevatedButton(
             onPressed: () {
-              // db
-              //     .collection("meals")
-              //     .doc("testBeispiel")
-              //     .set({
-              //       "name": _nameController.text,
-              //       "mealtype": _selectedMealType,
-              //     })
-              //     .onError((e, _) => print("Error writing document: $e"));
               db.createMeal(
                 Meal(
                   id: "1",
@@ -77,7 +65,7 @@ class _AddMealPageState extends State<AddMealPage> {
             },
             child: Text("Add Meal"),
           ),
-          Text("Tapped: ${context.watch<TestService>().tappedCount}"),
+          Text("Tapped: ${context.watch<CounterService>().tappedCount}"),
         ],
       ),
     );
