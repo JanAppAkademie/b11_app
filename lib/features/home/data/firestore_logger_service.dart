@@ -124,5 +124,3 @@ extension StreamLogging on Stream<QuerySnapshot<Map<String, dynamic>>> {
     });
   }
 }
-
-

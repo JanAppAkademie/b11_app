@@ -1,5 +1,6 @@
 import 'package:b11_app/features/auth/data/auth_service.dart';
 import 'package:b11_app/features/home/data/firestore_repo.dart';
+import 'package:b11_app/features/home/presentation/state/add_meal_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ void main() async {
         Provider<AuthService>(create: (_) => AuthService()),
         Provider<FirestoreRepository>(create: (_) => firestoreRepo),
         Provider<FirebaseFirestore>(create: (_) => firestore),
+        ChangeNotifierProvider<AddMealService>(create: (_) => AddMealService()),
         ChangeNotifierProvider<CounterService>(create: (_) => CounterService()),
       ],
       child: MaterialApp(home: const HomePage()),

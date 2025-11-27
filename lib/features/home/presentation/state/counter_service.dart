@@ -11,5 +11,3 @@ class CounterService extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-

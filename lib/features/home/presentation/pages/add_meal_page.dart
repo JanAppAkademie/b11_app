@@ -1,30 +1,16 @@
 import 'package:b11_app/features/home/domain/meal.dart';
 import 'package:b11_app/features/home/data/firestore_repo.dart';
+import 'package:b11_app/features/home/presentation/state/add_meal_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../state/counter_service.dart';
 
-class AddMealPage extends StatefulWidget {
-  const AddMealPage({super.key});
-
-  @override
-  State<AddMealPage> createState() => _AddMealPageState();
-}
-
-class _AddMealPageState extends State<AddMealPage> {
+class AddMealPage extends StatelessWidget {
+  AddMealPage({super.key});
   final TextEditingController _nameController = TextEditingController();
-  String? _selectedMealType;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    List<String> testList = MealType.values.map((e) => e.name).toList();
-    print("addmealpage reload");
-    final db = FirestoreRepository();
     return Scaffold(
       appBar: AppBar(title: const Text("Add Meal")),
       body: Column(
@@ -38,29 +24,26 @@ class _AddMealPageState extends State<AddMealPage> {
             validator: (value) =>
                 value != null && value.isNotEmpty ? null : "Required",
           ),
-          DropdownButton(
-            hint: Text("Select Meal Type"),
-            items: testList
-                .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedMealType = value!;
-                print(_selectedMealType);
-              });
+
+          Consumer<AddMealService>(
+            builder: (context, addMealService, child) {
+              return DropdownButton(
+                hint: Text("Select Meal Type"),
+                items: addMealService.mealTypes
+                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                    .toList(),
+                onChanged: (value) {
+                  addMealService.changeMealType(value!);
+                },
+                value: addMealService.selectedMealType,
+              );
             },
-            value: _selectedMealType,
           ),
           ElevatedButton(
             onPressed: () {
-              db.createMeal(
-                Meal(
-                  id: "1",
-                  name: _nameController.text,
-                  mealtype: MealType.values.byName(
-                    _selectedMealType ?? "OMNIVORE",
-                  ),
-                ),
+              context.read<AddMealService>().createMeal(
+                _nameController.text,
+                context.read<AddMealService>().selectedMealType ?? "OMNIVORE",
               );
             },
             child: Text("Add Meal"),
