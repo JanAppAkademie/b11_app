@@ -16,6 +16,27 @@ class FirestoreRepository {
         .toList();
   }
 
+    Future<Map<String, int>> getTypeCount() async {
+    final snapshot = await _firestore.collection("meals").get();
+    List<Meal> meals = snapshot.docs
+        .map((doc) => Meal.fromMap(doc.id, doc.data()))
+        .toList();
+
+    int countVegan =
+        meals.where((element) => element.mealtype == MealType.VEGAN).length;
+    int countVegetarian = meals
+        .where((element) => element.mealtype == MealType.VEGETARIAN)
+        .length;
+    int countOmnivore =
+        meals.where((element) => element.mealtype == MealType.OMNIVORE).length;
+
+    return {
+      "count_vegan": countVegan,
+      "count_vegetarian": countVegetarian,
+      "count_omnivore": countOmnivore,
+    };
+  }
+
   Future<Meal?> getMeal(String id) async {
     final doc = await _firestore.collection("meals").doc(id).get();
     if (!doc.exists) return null;

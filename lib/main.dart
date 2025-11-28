@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'config/firebase_options.dart';
+import 'core/services/theme_service.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/home/presentation/state/counter_service.dart';
 
@@ -24,8 +25,19 @@ void main() async {
         Provider<FirebaseFirestore>(create: (_) => firestore),
         ChangeNotifierProvider<AddMealService>(create: (_) => AddMealService()),
         ChangeNotifierProvider<CounterService>(create: (_) => CounterService()),
+        ChangeNotifierProvider<ThemeService>(create: (_) => ThemeService()),
       ],
-      child: MaterialApp(home: const HomePage()),
+      child: Consumer<ThemeService>(
+        builder: (context, themeService, child) {
+          return MaterialApp(
+            title: 'Meal App',
+            theme: ThemeData.light(useMaterial3: true),
+            darkTheme: ThemeData.dark(useMaterial3: true),
+            themeMode: themeService.themeMode,
+            home: const HomePage(),
+          );
+        },
+      ),
     ),
   );
 }

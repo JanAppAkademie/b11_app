@@ -1,8 +1,10 @@
 import 'package:b11_app/features/home/presentation/pages/add_meal_page.dart';
 import 'package:b11_app/features/home/data/firestore_repo.dart';
+import 'package:b11_app/features/home/presentation/pages/stats_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/services/theme_service.dart';
 import '../../data/firestore_logger_service.dart';
 import '../../../auth/data/auth_service.dart';
 import '../state/counter_service.dart';
@@ -17,6 +19,20 @@ class MainAppPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Meals"),
         actions: [
+          Consumer<ThemeService>(
+            builder: (context, themeService, child) {
+              return IconButton(
+                onPressed: () {
+                  themeService.toggleTheme();
+                },
+                icon: Icon(
+                  themeService.themeMode == ThemeMode.dark
+                      ? Icons.light_mode
+                      : Icons.dark_mode,
+                ),
+              );
+            },
+          ),
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -70,6 +86,10 @@ class MainAppPage extends StatelessWidget {
                 ElevatedButton.icon(
                   onPressed: () {
                     FirestoreLoggerService.printSummary();
+                     Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StatsPage()),
+              );
                   },
 
                   label: const Text("Show Stats"),
