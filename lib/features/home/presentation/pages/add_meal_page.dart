@@ -1,9 +1,9 @@
-import 'package:b11_app/features/home/domain/meal.dart';
-import 'package:b11_app/features/home/data/firestore_repo.dart';
+import 'package:b11_app/features/home/presentation/bloc/counter_bloc.dart';
+import 'package:b11_app/features/home/presentation/bloc/counter_state.dart';
 import 'package:b11_app/features/home/presentation/state/add_meal_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import '../state/counter_service.dart';
 
 class AddMealPage extends StatelessWidget {
   AddMealPage({super.key});
@@ -41,14 +41,24 @@ class AddMealPage extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              context.read<AddMealService>().createMeal(
+              context.read<AddMealService>()
+              
+              
+              
+              
+              
+              .createMeal(
                 _nameController.text,
                 context.read<AddMealService>().selectedMealType ?? "OMNIVORE",
               );
             },
             child: Text("Add Meal"),
           ),
-          Text("Tapped: ${context.watch<CounterService>().tappedCount}"),
+          BlocBuilder<CounterBloc, CounterState>(
+            builder: (context, state) {
+              return Text("Tapped: ${state.tappedCount}");
+            },
+          ),
         ],
       ),
     );
