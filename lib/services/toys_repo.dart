@@ -10,9 +10,10 @@ class ToysRepo extends GenericRepository<Toy> {
   }
 
   @override
-  Future<List<Toy>> getAll() {
-    // TODO: implement getAll
-    throw UnimplementedError();
+  Future<List<Toy>> getAll() async {
+    final data = await _firestore.collection("toys").get();
+
+    return data.docs.map((d) => Toy(d["name"], d["price"] * 1.0)).toList();
   }
 
   @override
