@@ -12,7 +12,7 @@ class MainAppPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firestoreRepo = FirestoreRepository();
+    final firestoreRepo = MealRepository();
     final firestore = FirebaseFirestore.instance;
     final authService = AuthService();
 

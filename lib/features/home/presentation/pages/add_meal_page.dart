@@ -24,7 +24,7 @@ class _AddMealPageState extends State<AddMealPage> {
   Widget build(BuildContext context) {
     List<String> testList = MealType.values.map((e) => e.name).toList();
 
-    final db = FirestoreRepository();
+    final db = MealRepository();
     return Scaffold(
       appBar: AppBar(title: const Text("Add Meal")),
       body: Column(

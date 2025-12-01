@@ -1,7 +1,7 @@
 import 'package:b11_app/models/meal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FirestoreRepository {
+class MealRepository {
   final _firestore = FirebaseFirestore.instance;
 
   // CRUD
