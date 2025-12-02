@@ -1,6 +1,6 @@
-import 'package:b11_app/features/home/presentation/bloc/counter_bloc.dart';
-import 'package:b11_app/features/home/presentation/bloc/counter_event.dart';
-import 'package:b11_app/features/home/presentation/bloc/counter_state.dart';
+import 'package:b11_app/features/home/presentation/bloc/counter/counter_bloc.dart';
+import 'package:b11_app/features/home/presentation/bloc/counter/counter_event.dart';
+import 'package:b11_app/features/home/presentation/bloc/counter/counter_state.dart';
 import 'package:b11_app/features/home/presentation/pages/add_meal_page.dart';
 import 'package:b11_app/features/home/data/firestore_repo.dart';
 import 'package:b11_app/features/home/presentation/pages/stats_page.dart';

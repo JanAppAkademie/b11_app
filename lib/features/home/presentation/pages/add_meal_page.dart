@@ -1,5 +1,9 @@
-import 'package:b11_app/features/home/presentation/bloc/counter_bloc.dart';
-import 'package:b11_app/features/home/presentation/bloc/counter_state.dart';
+import 'package:b11_app/features/home/domain/meal.dart';
+import 'package:b11_app/features/home/presentation/bloc/add_meal/add_meal_bloc.dart';
+import 'package:b11_app/features/home/presentation/bloc/add_meal/add_meal_event.dart';
+import 'package:b11_app/features/home/presentation/bloc/add_meal/add_meal_state.dart';
+import 'package:b11_app/features/home/presentation/bloc/counter/counter_bloc.dart';
+import 'package:b11_app/features/home/presentation/bloc/counter/counter_state.dart';
 import 'package:b11_app/features/home/presentation/state/add_meal_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +15,8 @@ class AddMealPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> mealTypes = MealType.values.map((e) => e.name).toList();
+
     return Scaffold(
       appBar: AppBar(title: const Text("Add Meal")),
       body: Column(
@@ -25,39 +31,41 @@ class AddMealPage extends StatelessWidget {
                 value != null && value.isNotEmpty ? null : "Required",
           ),
 
-          Consumer<AddMealService>(
-            builder: (context, addMealService, child) {
+          BlocConsumer<AddMealBloc, AddMealState>(
+            
+            listener: (context, state) {
+
+              if(state.mealType == "OMNIVORE"){
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Meal type is required")),
+                );
+              }
+            },
+            builder: (context, state) {
               return DropdownButton(
                 hint: Text("Select Meal Type"),
-                items: addMealService.mealTypes
+                items: mealTypes
                     .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                     .toList(),
-                onChanged: (value) {
-                  addMealService.changeMealType(value!);
+                onChanged: (String? value) {
+                  context.read<AddMealBloc>().add(
+                    AddMealTypeChanged(mealType: value ?? "OMNIVORE"),
+                  );
                 },
-                value: addMealService.selectedMealType,
+                value: state.mealType,
               );
             },
           ),
           ElevatedButton(
             onPressed: () {
-              context.read<AddMealService>()
-              
-              
-              
-              
-              
-              .createMeal(
-                _nameController.text,
-                context.read<AddMealService>().selectedMealType ?? "OMNIVORE",
+              context.read<AddMealBloc>().add(
+                AddMealSubmitted(
+                  name: _nameController.text,
+                  mealType: context.read<AddMealBloc>().state.mealType,
+                ),
               );
             },
             child: Text("Add Meal"),
-          ),
-          BlocBuilder<CounterBloc, CounterState>(
-            builder: (context, state) {
-              return Text("Tapped: ${state.tappedCount}");
-            },
           ),
         ],
       ),
