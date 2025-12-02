@@ -1,3 +1,5 @@
+import 'package:b11_app/core/bloc/theme/theme_bloc.dart';
+import 'package:b11_app/core/bloc/theme/theme_state.dart';
 import 'package:b11_app/features/auth/data/auth_service.dart';
 import 'package:b11_app/features/home/data/firestore_repo.dart';
 import 'package:b11_app/features/home/presentation/bloc/add_meal/add_meal_bloc.dart';
@@ -28,15 +30,16 @@ void main() async {
         ChangeNotifierProvider<AddMealService>(create: (_) => AddMealService()),
         BlocProvider<CounterBloc>(create: (_) => CounterBloc()),
         BlocProvider<AddMealBloc>(create: (_) => AddMealBloc()),
+        BlocProvider<ThemeBloc>(create: (_) => ThemeBloc()),
         ChangeNotifierProvider<ThemeService>(create: (_) => ThemeService()),
       ],
-      child: Consumer<ThemeService>(
-        builder: (context, themeService, child) {
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, state) {
           return MaterialApp(
             title: 'Meal App',
             theme: ThemeData.light(useMaterial3: true),
             darkTheme: ThemeData.dark(useMaterial3: true),
-            themeMode: themeService.themeMode,
+            themeMode: state.themeMode,
             home: const HomePage(),
           );
         },
