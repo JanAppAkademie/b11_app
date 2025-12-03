@@ -1,5 +1,7 @@
 import 'package:b11_app/core/bloc/theme/theme_bloc.dart';
 import 'package:b11_app/core/bloc/theme/theme_state.dart';
+import 'package:b11_app/core/cubit/theme_cubit.dart';
+import 'package:b11_app/core/cubit/theme_state_cubit.dart';
 import 'package:b11_app/features/auth/data/auth_service.dart';
 import 'package:b11_app/features/home/data/firestore_repo.dart';
 import 'package:b11_app/features/home/presentation/bloc/add_meal/add_meal_bloc.dart';
@@ -31,9 +33,10 @@ void main() async {
         BlocProvider<CounterBloc>(create: (_) => CounterBloc()),
         BlocProvider<AddMealBloc>(create: (_) => AddMealBloc()),
         BlocProvider<ThemeBloc>(create: (_) => ThemeBloc()),
+        BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
         ChangeNotifierProvider<ThemeService>(create: (_) => ThemeService()),
       ],
-      child: BlocBuilder<ThemeBloc, ThemeState>(
+      child: BlocBuilder<ThemeCubit, ThemeStateCubit>(
         builder: (context, state) {
           return MaterialApp(
             title: 'Meal App',

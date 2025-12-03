@@ -1,6 +1,7 @@
 import 'package:b11_app/core/bloc/theme/theme_bloc.dart';
 import 'package:b11_app/core/bloc/theme/theme_event.dart';
 import 'package:b11_app/core/bloc/theme/theme_state.dart';
+import 'package:b11_app/core/cubit/theme_cubit.dart';
 import 'package:b11_app/features/home/presentation/bloc/counter/counter_bloc.dart';
 import 'package:b11_app/features/home/presentation/bloc/counter/counter_event.dart';
 import 'package:b11_app/features/home/presentation/bloc/counter/counter_state.dart';
@@ -25,21 +26,16 @@ class MainAppPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Meals"),
         actions: [
-            BlocConsumer<ThemeBloc, ThemeState>(
-            listener: (context, state) {
-             
-            }, builder: (BuildContext context, ThemeState state) {  
-               return IconButton(
+      IconButton(
                 onPressed: () {
-                  context.read<ThemeBloc>().add(ToggleTheme());
+                  context.read<ThemeCubit>().toggleTheme();
                 },
                 icon: Icon(
-                  state.themeMode == ThemeMode.dark
+                  context.watch<ThemeCubit>().state.themeMode == ThemeMode.dark
                       ? Icons.light_mode
                       : Icons.dark_mode,
                 ),
-              );
-            },),
+              ),
           IconButton(
             onPressed: () {
               Navigator.push(
