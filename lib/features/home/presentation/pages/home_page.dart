@@ -5,6 +5,8 @@ import '../../../auth/data/auth_service.dart';
 import '../../../auth/presentation/pages/login_page.dart';
 import 'main_app_page.dart';
 
+
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 

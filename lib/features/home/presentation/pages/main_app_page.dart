@@ -1,12 +1,14 @@
 import 'package:b11_app/core/bloc/theme/theme_bloc.dart';
 import 'package:b11_app/core/bloc/theme/theme_event.dart';
 import 'package:b11_app/core/bloc/theme/theme_state.dart';
+import 'package:b11_app/core/riverpod/theme_riverpod.dart';
 import 'package:b11_app/features/home/presentation/bloc/counter/counter_bloc.dart';
 import 'package:b11_app/features/home/presentation/bloc/counter/counter_event.dart';
 import 'package:b11_app/features/home/presentation/bloc/counter/counter_state.dart';
 import 'package:b11_app/features/home/presentation/pages/add_meal_page.dart';
 import 'package:b11_app/features/home/data/firestore_repo.dart';
 import 'package:b11_app/features/home/presentation/pages/stats_page.dart';
+import 'package:b11_app/features/home/presentation/riverpod/counter_generated.dart';
 import 'package:b11_app/features/home/presentation/riverpod/counter_notifier.dart';
 import 'package:b11_app/features/home/presentation/riverpod/counter_state_notifier.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/services/theme_service.dart';
 import '../../data/firestore_logger_service.dart';
 import '../../../auth/data/auth_service.dart';
 
@@ -23,27 +24,21 @@ class MainAppPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(counterNotifierProvider);
-    print(count);
+    final count = ref.watch(counterProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Meals"),
         actions: [
-          BlocConsumer<ThemeBloc, ThemeState>(
-            listener: (context, state) {},
-            builder: (BuildContext context, ThemeState state) {
-              return IconButton(
+          IconButton(
                 onPressed: () {
-                  context.read<ThemeBloc>().add(ToggleTheme());
+                   ref.read(themeNotifierProvider.notifier).toggleTheme();
                 },
                 icon: Icon(
-                  state.themeMode == ThemeMode.dark
+                  ref.read(themeNotifierProvider).themeMode == ThemeMode.dark
                       ? Icons.light_mode
                       : Icons.dark_mode,
                 ),
-              );
-            },
-          ),
+              ),
           IconButton(
             onPressed: () {
               Navigator.push(

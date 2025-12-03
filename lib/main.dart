@@ -1,5 +1,7 @@
 import 'package:b11_app/core/bloc/theme/theme_bloc.dart';
 import 'package:b11_app/core/bloc/theme/theme_state.dart';
+import 'package:b11_app/core/provider/theme_service.dart';
+import 'package:b11_app/core/riverpod/theme_riverpod.dart';
 import 'package:b11_app/features/auth/data/auth_service.dart';
 import 'package:b11_app/features/home/data/firestore_repo.dart';
 import 'package:b11_app/features/home/presentation/bloc/add_meal/add_meal_bloc.dart';
@@ -13,7 +15,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart' as provider;
 
 import 'config/firebase_options.dart';
-import 'core/services/theme_service.dart';
 import 'features/home/presentation/pages/home_page.dart';
 
 void main() async {
@@ -38,19 +39,25 @@ void main() async {
           create: (_) => ThemeService(),
         ),
       ],
-      child: BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, state) {
-          return ProviderScope(
-            child: MaterialApp(
+      child:  ProviderScope(
+            child: Consumer(
+              builder: (context, ref, child) {
+               final themeState = ref.watch(themeNotifierProvider);
+                  final state = ref.read(themeNotifierProvider);
+               final mode = themeState.themeMode;
+                return   MaterialApp(
               title: 'Meal App',
               theme: ThemeData.light(useMaterial3: true),
               darkTheme: ThemeData.dark(useMaterial3: true),
-              themeMode: state.themeMode,
+              themeMode: mode,
               home: const HomePage(),
+            );
+              },
             ),
-          );
-        },
-      ),
-    ),
-  );
-}
+            
+            
+          
+          )));
+        }
+
+
