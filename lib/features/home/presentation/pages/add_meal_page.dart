@@ -4,17 +4,19 @@ import 'package:b11_app/features/home/presentation/bloc/add_meal/add_meal_event.
 import 'package:b11_app/features/home/presentation/bloc/add_meal/add_meal_state.dart';
 import 'package:b11_app/features/home/presentation/bloc/counter/counter_bloc.dart';
 import 'package:b11_app/features/home/presentation/bloc/counter/counter_state.dart';
+import 'package:b11_app/features/home/presentation/riverpod/counter_state_notifier.dart';
 import 'package:b11_app/features/home/presentation/state/add_meal_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 
-class AddMealPage extends StatelessWidget {
+class AddMealPage extends ConsumerWidget {
   AddMealPage({super.key});
   final TextEditingController _nameController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     List<String> mealTypes = MealType.values.map((e) => e.name).toList();
 
     return Scaffold(
@@ -32,10 +34,8 @@ class AddMealPage extends StatelessWidget {
           ),
 
           BlocConsumer<AddMealBloc, AddMealState>(
-            
             listener: (context, state) {
-
-              if(state.mealType == "OMNIVORE"){
+              if (state.mealType == "OMNIVORE") {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text("Meal type is required")),
                 );
@@ -65,7 +65,7 @@ class AddMealPage extends StatelessWidget {
                 ),
               );
             },
-            child: Text("Add Meal"),
+            child: Text(ref.read(counterStateNotifierProvider).toString()),
           ),
         ],
       ),

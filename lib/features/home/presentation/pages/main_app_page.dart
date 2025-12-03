@@ -7,29 +7,32 @@ import 'package:b11_app/features/home/presentation/bloc/counter/counter_state.da
 import 'package:b11_app/features/home/presentation/pages/add_meal_page.dart';
 import 'package:b11_app/features/home/data/firestore_repo.dart';
 import 'package:b11_app/features/home/presentation/pages/stats_page.dart';
+import 'package:b11_app/features/home/presentation/riverpod/counter_notifier.dart';
+import 'package:b11_app/features/home/presentation/riverpod/counter_state_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/services/theme_service.dart';
 import '../../data/firestore_logger_service.dart';
 import '../../../auth/data/auth_service.dart';
 
-class MainAppPage extends StatelessWidget {
+class MainAppPage extends ConsumerWidget {
   const MainAppPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    print("mainApppage reload");
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterNotifierProvider);
+    print(count);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Meals"),
         actions: [
-            BlocConsumer<ThemeBloc, ThemeState>(
-            listener: (context, state) {
-             
-            }, builder: (BuildContext context, ThemeState state) {  
-               return IconButton(
+          BlocConsumer<ThemeBloc, ThemeState>(
+            listener: (context, state) {},
+            builder: (BuildContext context, ThemeState state) {
+              return IconButton(
                 onPressed: () {
                   context.read<ThemeBloc>().add(ToggleTheme());
                 },
@@ -39,7 +42,8 @@ class MainAppPage extends StatelessWidget {
                       : Icons.dark_mode,
                 ),
               );
-            },),
+            },
+          ),
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -73,7 +77,8 @@ class MainAppPage extends StatelessWidget {
                   itemBuilder: (context, i) {
                     return GestureDetector(
                       onTap: () {
-                        context.read<CounterBloc>().add(CounterIncremented());
+                        ref.read(counterStateNotifierProvider.notifier).state++;
+                        // context.read<CounterBloc>().add(CounterIncremented());
                       },
                       child: ListTile(
                         title: Text(meals[i].name),
@@ -92,7 +97,7 @@ class MainAppPage extends StatelessWidget {
               children: [
                 ElevatedButton.icon(
                   onPressed: () {
-                    context.read<CounterBloc>().add(CounterCoolEvent());
+                    // context.read<CounterBloc>().add(CounterCoolEvent());
                     /* FirestoreLoggerService.printSummary();
                     Navigator.push(
                       context,
@@ -104,8 +109,9 @@ class MainAppPage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    //context.read<AuthService>().signOut();
-                    context.read<CounterBloc>().add(CounterDecremented());
+                    ref.read(counterStateNotifierProvider.notifier).state--;
+                    //context.read<AthService>().signOut();
+                    // context.read<CounterBloc>().add(CounterDecremented());
                   },
                   child: const Text("Decrement"),
                 ),
@@ -118,20 +124,11 @@ class MainAppPage extends StatelessWidget {
   }
 }
 
-class MyTextWidget extends StatelessWidget {
+class MyTextWidget extends ConsumerWidget {
   const MyTextWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<CounterBloc, CounterState>(
-      builder: (context, state) {
-        if (state is CounterStateInitial) {
-          return const CircularProgressIndicator();
-        } else if (state.tappedCount == 5) {
-          return Container(color: Colors.red, height: 100, width: 100);
-        }
-        return Text("Tapped: ${state.tappedCount}");
-      },
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Text(ref.watch(counterStateNotifierProvider).toString());
   }
 }

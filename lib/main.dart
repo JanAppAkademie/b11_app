@@ -9,7 +9,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' as provider;
 
 import 'config/firebase_options.dart';
 import 'core/services/theme_service.dart';
@@ -22,25 +23,31 @@ void main() async {
   final firestoreRepo = FirestoreRepository();
   final firestore = FirebaseFirestore.instance;
   runApp(
-    MultiProvider(
+    provider.MultiProvider(
       providers: [
-        Provider<AuthService>(create: (_) => AuthService()),
-        Provider<FirestoreRepository>(create: (_) => firestoreRepo),
-        Provider<FirebaseFirestore>(create: (_) => firestore),
-        ChangeNotifierProvider<AddMealService>(create: (_) => AddMealService()),
-        BlocProvider<CounterBloc>(create: (_) => CounterBloc()),
+        provider.Provider<AuthService>(create: (_) => AuthService()),
+        provider.Provider<FirestoreRepository>(create: (_) => firestoreRepo),
+        provider.Provider<FirebaseFirestore>(create: (_) => firestore),
+        provider.ChangeNotifierProvider<AddMealService>(
+          create: (_) => AddMealService(),
+        ),
+        // BlocProvider<CounterBloc>(create: (_) => CounterBloc()),
         BlocProvider<AddMealBloc>(create: (_) => AddMealBloc()),
         BlocProvider<ThemeBloc>(create: (_) => ThemeBloc()),
-        ChangeNotifierProvider<ThemeService>(create: (_) => ThemeService()),
+        provider.ChangeNotifierProvider<ThemeService>(
+          create: (_) => ThemeService(),
+        ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
-          return MaterialApp(
-            title: 'Meal App',
-            theme: ThemeData.light(useMaterial3: true),
-            darkTheme: ThemeData.dark(useMaterial3: true),
-            themeMode: state.themeMode,
-            home: const HomePage(),
+          return ProviderScope(
+            child: MaterialApp(
+              title: 'Meal App',
+              theme: ThemeData.light(useMaterial3: true),
+              darkTheme: ThemeData.dark(useMaterial3: true),
+              themeMode: state.themeMode,
+              home: const HomePage(),
+            ),
           );
         },
       ),
