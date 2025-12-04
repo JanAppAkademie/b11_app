@@ -1,25 +1,32 @@
 import 'package:b11_app/features/home/data/firestore_repo.dart';
 import 'package:b11_app/features/home/domain/meal.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddMealService extends ChangeNotifier {
-  String? _selectedMealType;
+class AddMealNotifier extends Notifier<Meal> {
   List<String> mealTypes = MealType.values.map((e) => e.name).toList();
   final db = FirestoreRepository();
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  String? get selectedMealType => _selectedMealType;
+  @override
+  build() {
+    return Meal(name: "", mealtype: MealType.OMNIVORE);
+  }
+
+  void changeMealType(String mealtype) {
+    state = state.copyWith(mealtype: MealType.values.byName(mealtype));
+  }
+
+  void changeName(String name) {
+    state = state.copyWith(name: name);
+  }
 
   Future<void> createMeal(String name, String mealtype) async {
     await db.createMeal(
       Meal(name: name, mealtype: MealType.values.byName(mealtype)),
     );
   }
-
-  void changeMealType(String mealtype) {
-    _selectedMealType = mealtype;
-    notifyListeners();
-  }
 }
+
+final addMealNotifierProvider = NotifierProvider<AddMealNotifier, Meal>(
+  AddMealNotifier.new,
+);

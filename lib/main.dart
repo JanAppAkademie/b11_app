@@ -39,25 +39,22 @@ void main() async {
           create: (_) => ThemeService(),
         ),
       ],
-      child:  ProviderScope(
-            child: Consumer(
-              builder: (context, ref, child) {
-               final themeState = ref.watch(themeNotifierProvider);
-                  final state = ref.read(themeNotifierProvider);
-               final mode = themeState.themeMode;
-                return   MaterialApp(
+      child: ProviderScope(
+        child: Consumer(
+          builder: (context, ref, child) {
+            final themeState = ref.watch(themeNotifierProvider);
+            final state = ref.read(themeNotifierProvider);
+            final mode = themeState.themeMode;
+            return MaterialApp(
               title: 'Meal App',
               theme: ThemeData.light(useMaterial3: true),
               darkTheme: ThemeData.dark(useMaterial3: true),
               themeMode: mode,
               home: const HomePage(),
             );
-              },
-            ),
-            
-            
-          
-          )));
-        }
-
-
+          },
+        ),
+      ),
+    ),
+  );
+}

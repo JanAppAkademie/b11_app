@@ -8,10 +8,7 @@ class AddMealBloc extends Bloc<AddMealEvent, AddMealState> {
   AddMealBloc() : super(AddMealState()) {
     final db = FirestoreRepository();
     on<AddMealSubmitted>((event, emit) async {
-
-
       emit(state.copyWith(mealType: event.mealType, name: event.name));
-
 
       await db.createMeal(
         Meal(

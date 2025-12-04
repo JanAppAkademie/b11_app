@@ -19,4 +19,8 @@ class Meal {
   Map<String, dynamic> toMap() {
     return {"name": name, "mealtype": mealtype.name};
   }
+
+  Meal copyWith({String? name, MealType? mealtype}) {
+    return Meal(name: name ?? this.name, mealtype: mealtype ?? this.mealtype);
+  }
 }
