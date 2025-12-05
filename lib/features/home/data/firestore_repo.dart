@@ -1,5 +1,6 @@
 import 'package:b11_app/features/home/domain/meal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FirestoreRepository {
   final _firestore = FirebaseFirestore.instance;
@@ -64,3 +65,7 @@ class FirestoreRepository {
         );
   }
 }
+
+final firebaseProvider = Provider<FirestoreRepository>((ref) {
+  return FirestoreRepository();
+});

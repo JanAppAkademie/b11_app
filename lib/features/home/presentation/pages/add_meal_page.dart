@@ -1,19 +1,12 @@
-import 'package:b11_app/features/home/data/firestore_repo.dart';
-import 'package:b11_app/features/home/domain/meal.dart';
-
 import 'package:b11_app/features/home/presentation/riverpod/add_meal_notifier.dart';
-import 'package:b11_app/features/home/presentation/riverpod/counter_state_notifier.dart';
-import 'package:b11_app/features/home/presentation/state/add_meal_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddMealPage extends riverpod.ConsumerWidget {
-  AddMealPage({super.key});
+class AddMealPage extends ConsumerWidget {
+  const AddMealPage({super.key});
 
   @override
-  Widget build(BuildContext context, riverpod.WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text("Add Meal")),
       body: Column(
@@ -30,7 +23,7 @@ class AddMealPage extends riverpod.ConsumerWidget {
                 value != null && value.isNotEmpty ? null : "Required",
           ),
 
-          riverpod.Consumer(
+          Consumer(
             builder: (context, ref, child) {
               return DropdownButton(
                 hint: Text("Select Meal Type"),
@@ -48,7 +41,7 @@ class AddMealPage extends riverpod.ConsumerWidget {
               );
             },
           ),
-          riverpod.Consumer(
+          Consumer(
             builder: (context, ref, child) {
               return ElevatedButton(
                 onPressed: () {

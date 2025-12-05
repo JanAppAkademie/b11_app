@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  static const List<String> scopes = <String>[
-    'email',
-    'profile',
-  ];
+  static const List<String> scopes = <String>['email', 'profile'];
 
   GoogleSignIn get _googleSignIn => GoogleSignIn.instance;
 
@@ -19,21 +17,22 @@ class AuthService {
     try {
       final dynamic signInInstance = _googleSignIn;
       GoogleSignInAccount? googleUser;
-      
+
       try {
         googleUser = await signInInstance.signIn();
       } catch (e) {
         try {
           googleUser = await signInInstance.authenticate();
         } catch (e2) {
-             print("Neither signIn nor authenticate worked: $e2");
-             rethrow;
+          print("Neither signIn nor authenticate worked: $e2");
+          rethrow;
         }
       }
-      
+
       if (googleUser == null) return null;
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       final dynamic authDynamic = googleAuth;
       String? accessToken;
@@ -48,20 +47,22 @@ class AuthService {
         idToken: googleAuth.idToken,
       );
 
-      final UserCredential userCredential = await _auth.signInWithCredential(credential);
-      
+      final UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
+
       return userCredential.user;
     } catch (e) {
       print("Error signing in with Google: $e");
       rethrow;
     }
   }
-  
+
   Future<User?> signInWithEmail(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
-        email: email, 
-        password: password
+        email: email,
+        password: password,
       );
       return result.user;
     } catch (e) {
@@ -73,8 +74,8 @@ class AuthService {
   Future<User?> registerWithEmail(String email, String password) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
-        email: email, 
-        password: password
+        email: email,
+        password: password,
       );
       return result.user;
     } catch (e) {
@@ -92,3 +93,7 @@ class AuthService {
     await _auth.signOut();
   }
 }
+
+final authServiceProvider = Provider<AuthService>((ref) {
+  return AuthService();
+});

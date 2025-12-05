@@ -1,17 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/auth_service.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final AuthService _authService = AuthService();
+class _LoginPageState extends ConsumerState<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -21,10 +20,9 @@ class _LoginPageState extends State<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
-      await _authService.registerWithEmail(
-        _emailController.text,
-        _passwordController.text,
-      );
+      await ref
+          .read(authServiceProvider)
+          .registerWithEmail(_emailController.text, _passwordController.text);
     } on FirebaseAuthException catch (e) {
       _showError(e.message ?? "Registration failed");
     }
@@ -34,10 +32,9 @@ class _LoginPageState extends State<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
-      await _authService.signInWithEmail(
-        _emailController.text,
-        _passwordController.text,
-      );
+      await ref
+          .read(authServiceProvider)
+          .signInWithEmail(_emailController.text, _passwordController.text);
     } on FirebaseAuthException catch (e) {
       _showError(e.message ?? "Login failed");
     }
@@ -49,7 +46,9 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     try {
-      await _authService.sendPasswordResetEmail(_emailController.text);
+      await ref
+          .read(authServiceProvider)
+          .sendPasswordResetEmail(_emailController.text);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Password reset email sent')),
@@ -62,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _signInWithGoogle() async {
     try {
-      await _authService.signInWithGoogle();
+      await ref.read(authServiceProvider).signInWithGoogle();
     } catch (e) {
       _showError("Google Sign-In failed: $e");
     }
@@ -78,7 +77,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    context.read<AuthService>().authStateChanges.listen((user) {});
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
